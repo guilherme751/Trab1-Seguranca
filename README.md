@@ -153,7 +153,7 @@ cp certs/server-fullchain.crt nginx/certs/
 cp certs/server.key nginx/certs/
 
 # Iniciar container Docker
-docker-compose up -d
+docker compose up -d
 ```
 
 **Verificar status do container:**
@@ -340,7 +340,7 @@ cp ca/server/server-fullchain.crt nginx/certs/
 cp ca/server/server.key nginx/certs/
 
 # Iniciar container Docker
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Passo 7: Testar Conexão HTTPS
