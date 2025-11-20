@@ -486,32 +486,37 @@ Acessar no navegador: `https://localhost`
 ### Capturas de Tela
 
 #### Tarefa 1 - Python
+![Certificado Raíz](tarefa1-python/prints/validate.png)
+*Figura 1: Saída do comando de validação
 
 ![Página HTTPS Tarefa 1](tarefa1-python/prints/telahttps.png)
-*Figura 1: Página HTTPS funcionando com certificado válido (Tarefa 1)*
+*Figura 2: Página HTTPS funcionando com certificado válido (Tarefa 1)*
 
 ![Certificado Raíz](tarefa1-python/prints/root.png)
-*Figura 2: Detalhes do certificado da CA raíz*
+*Figura 3: Detalhes do certificado da CA raíz*
 
 ![Certificado Intermediária](tarefa1-python/prints/intermediate.png)
-*Figura 3: Detalhes do certificado da CA intermediária*
+*Figura 4: Detalhes do certificado da CA intermediária*
 
 ![Certificado Servidor Localhost](tarefa1-python/prints/localhost.png)
-*Figura 4: Detalhes do certificado da servidor
+*Figura 5: Detalhes do certificado da servidor
 
 #### Tarefa 2 - OpenSSL
 
+![Certificado Raíz](tarefa2-openssl/prints/validate.png)
+*Figura 1: Saída do comando de validação
+
 ![Página HTTPS Tarefa 1](tarefa2-openssl/prints/telahttps.png)
-*Figura 1: Página HTTPS funcionando com certificado válido (Tarefa 2)*
+*Figura 2: Página HTTPS funcionando com certificado válido (Tarefa 2)*
 
 ![Certificado Raíz](tarefa2-openssl/prints/root.png)
-*Figura 2: Detalhes do certificado da CA raíz*
+*Figura 3: Detalhes do certificado da CA raíz*
 
 ![Certificado Intermediária](tarefa2-openssl/prints/intermediate.png)
-*Figura 3: Detalhes do certificado da CA intermediária*
+*Figura 4: Detalhes do certificado da CA intermediária*
 
 ![Certificado Servidor Localhost](tarefa2-openssl/prints/localhost.png)
-*Figura 4: Detalhes do certificado da servidor
+*Figura 5: Detalhes do certificado da servidor
 
 ### Comparação entre as Abordagens
 
