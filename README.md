@@ -2,7 +2,8 @@
 
 **Disciplina:** Segurança em Computação - 2025/2  
 **Professor:** Rodolfo da Silva Villaça  
-**Aluno:** Guilherme Silveira Gomes Brotto
+**Alunos:** [Nomes dos integrantes]
+**Link do Vídeo:** [YouTube - Demonstração](https://youtube.com/...)
 
 ## Sumário
 
@@ -152,14 +153,64 @@ Certificado do Servidor:
 cp certs/server-fullchain.crt nginx/certs/
 cp certs/server.key nginx/certs/
 
+# Criar página HTML
+cat > nginx/html/index.html << EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTTPS Seguro - Tarefa 1 Python</title>
+</head>
+<body>
+    <h1>Conexão HTTPS Segura com Python!</h1>
+    <p>Certificado emitido via serviço Python</p>
+</body>
+</html>
+EOF
+
+# Criar configuração do Nginx
+cat > nginx/nginx.conf << EOF
+events {
+    worker_connections 1024;
+}
+
+http {
+    server {
+        listen 443 ssl;
+        server_name localhost;
+
+        ssl_certificate /etc/nginx/certs/server-fullchain.crt;
+        ssl_certificate_key /etc/nginx/certs/server.key;
+
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers HIGH:!aNULL:!MD5;
+
+        location / {
+            root /usr/share/nginx/html;
+            index index.html;
+        }
+    }
+}
+EOF
+
+# Criar docker-compose.yml
+cat > docker-compose.yml << EOF
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    restart: unless-stopped
+EOF
+
 # Iniciar container Docker
-docker compose up -d
+docker-compose up -d
 ```
 
-**Verificar status do container:**
-```bash
-docker-compose ps
-```
 
 ### Passo 6: Importar CA Raiz no Navegador
 
@@ -331,16 +382,77 @@ issuer=C = BR, ST = ES, L = Vitoria, O = UFES, OU = DI, CN = Intermediate CA
 
 ### Passo 6: Configurar e Iniciar Servidor Nginx
 ```bash
-# Criar estrutura de diretórios
+# Voltar para o diretório raiz da tarefa
 cd ..
+
+# Criar estrutura de diretórios para Nginx
 mkdir -p nginx/html nginx/certs
 
 # Copiar certificados para diretório do Nginx
 cp ca/server/server-fullchain.crt nginx/certs/
 cp ca/server/server.key nginx/certs/
 
+# Criar página HTML
+cat > nginx/html/index.html << EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTTPS Seguro - Tarefa 2 OpenSSL</title>
+</head>
+<body>
+    <h1>Conexão HTTPS Segura com OpenSSL!</h1>
+    <p>Certificado emitido pela CA Intermediária</p>
+</body>
+</html>
+EOF
+
+# Criar configuração do Nginx
+cat > nginx/nginx.conf << EOF
+events {
+    worker_connections 1024;
+}
+
+http {
+    server {
+        listen 443 ssl;
+        server_name localhost;
+
+        ssl_certificate /etc/nginx/certs/server-fullchain.crt;
+        ssl_certificate_key /etc/nginx/certs/server.key;
+
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers HIGH:!aNULL:!MD5;
+
+        location / {
+            root /usr/share/nginx/html;
+            index index.html;
+        }
+    }
+}
+EOF
+
+# Criar docker-compose.yml
+cat > docker-compose.yml << EOF
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    restart: unless-stopped
+EOF
+
 # Iniciar container Docker
-docker compose up -d
+docker-compose up -d
+```
+
+**Verificar status do container:**
+```bash
+docker-compose ps
 ```
 
 ### Passo 7: Testar Conexão HTTPS
@@ -371,31 +483,35 @@ Acessar no navegador: `https://localhost`
 
 ---
 
-## Validação e Testes
-
 ### Capturas de Tela
 
 #### Tarefa 1 - Python
 
-![Página HTTPS Tarefa 1](screenshots/tarefa1-page.png)
+![Página HTTPS Tarefa 1](tarefa1-python/prints/telahttps.png)
 *Figura 1: Página HTTPS funcionando com certificado válido (Tarefa 1)*
 
-![Certificado Tarefa 1](screenshots/tarefa1-certificate.png)
-*Figura 2: Detalhes do certificado mostrando cadeia de confiança (Tarefa 1)*
+![Certificado Raíz](tarefa1-python/prints/root.png)
+*Figura 2: Detalhes do certificado da CA raíz*
 
-![Validação Python](screenshots/tarefa1-validation.png)
-*Figura 3: Saída do script de validação Python*
+![Certificado Intermediária](tarefa1-python/prints/intermediate.png)
+*Figura 3: Detalhes do certificado da CA intermediária*
+
+![Certificado Servidor Localhost](tarefa1-python/prints/localhost.png)
+*Figura 4: Detalhes do certificado da servidor
 
 #### Tarefa 2 - OpenSSL
 
-![Página HTTPS Tarefa 2](screenshots/tarefa2-page.png)
-*Figura 4: Página HTTPS funcionando com certificado válido (Tarefa 2)*
+![Página HTTPS Tarefa 1](tarefa2-openssl/prints/telahttps.png)
+*Figura 1: Página HTTPS funcionando com certificado válido (Tarefa 2)*
 
-![Certificado Tarefa 2](screenshots/tarefa2-certificate.png)
-*Figura 5: Detalhes do certificado mostrando cadeia de confiança (Tarefa 2)*
+![Certificado Raíz](tarefa2-openssl/prints/root.png)
+*Figura 2: Detalhes do certificado da CA raíz*
 
-![Validação OpenSSL](screenshots/tarefa2-validation.png)
-*Figura 6: Verificação da cadeia com OpenSSL*
+![Certificado Intermediária](tarefa2-openssl/prints/intermediate.png)
+*Figura 3: Detalhes do certificado da CA intermediária*
+
+![Certificado Servidor Localhost](tarefa2-openssl/prints/localhost.png)
+*Figura 4: Detalhes do certificado da servidor
 
 ### Comparação entre as Abordagens
 
@@ -447,12 +563,6 @@ Acessar no navegador: `https://localhost`
 
 O Let's Encrypt revolucionou o ecossistema de certificados SSL/TLS ao oferecer certificados gratuitos e automatizados através do protocolo ACME (Automatic Certificate Management Environment).
 
-**Processo de emissão Let's Encrypt:**
-1. Cliente ACME (ex: Certbot) solicita certificado
-2. Validação de controle do domínio via desafios (HTTP-01, DNS-01, TLS-ALPN-01)
-3. Emissão automática do certificado
-4. Renovação automática antes do vencimento
-
 **Vantagens do Let's Encrypt:**
 - Confiança universal (presente em todos os navegadores)
 - Gratuito e open-source
@@ -482,35 +592,7 @@ O Let's Encrypt revolucionou o ecossistema de certificados SSL/TLS ao oferecer c
 - Conformidade regulatória exige CA reconhecida
 - Impossível distribuir CA Raiz para todos os clientes
 
-### Comparação Técnica
 
-| Aspecto | CA Privada | Let's Encrypt | CA Comercial |
-|---------|------------|---------------|--------------|
-| **Custo** | Gratuito | Gratuito | US$ 50-1000+/ano |
-| **Confiança** | Manual | Automática | Automática |
-| **Validade** | Configurável | 90 dias | 1-2 anos |
-| **Automação** | Customizável | ACME | Varia |
-| **Validação** | Nenhuma | DV | DV/OV/EV |
-| **Suporte** | Interno | Comunidade | Comercial |
-| **Revogação** | Manual | OCSP/CRL | OCSP/CRL |
-
-### Segurança e Boas Práticas
-
-**CA Privada:**
-- Manter CA Raiz offline (cold storage)
-- Usar HSM (Hardware Security Module) para chaves sensíveis
-- Implementar políticas de backup robustas
-- Documentar procedimentos de revogação
-- Monitorar emissões de certificados
-
-**CA Pública (Let's Encrypt):**
-- Automatizar renovações (Certbot, acme.sh)
-- Monitorar logs de renovação
-- Implementar fallback em caso de falha
-- Manter CAA DNS records atualizados
-- Usar Certificate Transparency logs
-
----
 
 ## Conclusão
 
@@ -528,34 +610,5 @@ Este trabalho demonstrou com sucesso a implementação completa de uma Infraestr
 
 5. **Fullchain**: A necessidade de enviar a cadeia completa de certificados (servidor + intermediária) para que navegadores possam validar a confiança foi um aspecto crítico identificado durante a implementação.
 
-**Reflexão sobre CAs Públicas vs. Privadas:**
 
-O trabalho evidenciou que CAs privadas são ferramentas poderosas para ambientes controlados, mas exigem gestão cuidadosa. Serviços como Let's Encrypt democratizaram o acesso a certificados confiáveis, tornando HTTPS universal na internet. A escolha entre CA pública e privada deve considerar o contexto de uso, requisitos de confiança, custos operacionais e necessidades de automação.
 
-A experiência prática reforçou conceitos teóricos de criptografia de chave pública, assinatura digital e infraestrutura de confiança, demonstrando como esses elementos fundamentam a segurança das comunicações na internet moderna.
-
----
-
-## Referências
-
-[1] Stallings, William. **Criptografia e segurança de redes: princípios e práticas** – 6. ed. – São Paulo: Pearson Education do Brasil, 2015. Capítulo 14.
-
-[2] OpenSSL Project. **OpenSSL Documentation**. Disponível em: https://www.openssl.org/docs/
-
-[3] Python Cryptography Documentation. **cryptography.io**. Disponível em: https://cryptography.io/
-
-[4] NGINX Documentation. **NGINX SSL Module**. Disponível em: https://nginx.org/en/docs/http/ngx_http_ssl_module.html
-
-[5] Internet Security Research Group. **Let's Encrypt Documentation**. Disponível em: https://letsencrypt.org/docs/
-
-[6] RFC 5280. **Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile**. IETF, 2008.
-
-[7] Docker Documentation. **Docker Compose**. Disponível em: https://docs.docker.com/compose/
-
-[8] Mozilla Wiki. **CA Certificate Program**. Disponível em: https://wiki.mozilla.org/CA
-
----
-
-**Link do Repositório:** [GitHub - trabalho-pki](https://github.com/seu-usuario/trabalho-pki)
-
-**Link do Vídeo:** [YouTube - Demonstração](https://youtube.com/...)
